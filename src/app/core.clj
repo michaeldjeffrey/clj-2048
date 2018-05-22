@@ -7,15 +7,14 @@
 ;; I have a problem
 (api/go my-driver "https://gabrielecirulli.github.io/2048/")
 
+(defmacro define-direction [name key]
+  `(defn ~name []
+     (api/fill my-driver {:tag :body} ~key)))
 
-(defn direction [driver dir]
-  (partial api/fill driver {:tag :body} dir))
-
-(def up (direction my-driver keys/arrow-up))
-(def down (direction my-driver keys/arrow-down))
-(def left (direction my-driver keys/arrow-left))
-(def right (direction my-driver keys/arrow-right))
-
+(define-direction up keys/arrow-up)
+(define-direction down keys/arrow-down)
+(define-direction left keys/arrow-left)
+(define-direction right keys/arrow-right)
 
 (doseq [i (range 300)]
   ((rand-nth [down left right])))
