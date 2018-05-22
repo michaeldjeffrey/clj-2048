@@ -4,10 +4,9 @@
 
 (def my-driver (api/chrome))
 
-
+;; I have a problem
 (api/go my-driver "https://gabrielecirulli.github.io/2048/")
 
-(api/fill my-driver {:tag :body} keys/arrow-down)
 
 (defn direction [driver dir]
   (partial api/fill driver {:tag :body} dir))
@@ -21,14 +20,20 @@
 (doseq [i (range 300)]
   ((rand-nth [down left right])))
 
-(defn get-tiles []
+(defn get-tiles
+  "querier likes to return elements matching regex of :has-class.
+  'tile' will return all classes containing the word 'tile'."
+  []
   (api/query-all my-driver {:tag :div :fn/has-class "tile-position"}))
 
-(defn tile-classes []
+(defn tile-classes
+  "Get a vector of all classes for each tile block"
+  []
   (for [tile (get-tiles)]
     (api/get-element-attr-el my-driver tile :class)))
 
-(defn tile-classes-to-input [tiles]
+(defn tile-classes-to-input
+  [tiles] 
   (for [tile tiles]
     ;; split on spaces an hyphen
     ;; tile tile-{value} tile-position-{x}-{y}
