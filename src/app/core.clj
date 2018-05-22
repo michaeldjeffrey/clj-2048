@@ -2,6 +2,11 @@
   (:require [etaoin.api :as api]
             [etaoin.keys :as keys]))
 
+
+;;; TODO: Look into caching the score elements.
+;;; TODO: Maybe introduce some threading?
+;;; TODO: The actual ML bits
+
 (def my-driver (api/chrome))
 (api/quit my-driver)
 
