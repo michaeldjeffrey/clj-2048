@@ -58,12 +58,12 @@
 ;; (get-current-score)
 (def next-move (cycle [left down]))
 
-(def *default-right-threshold* 3)
+(def DEFAULT-RIGHT-THRESHOLD 3)
 
 (defn play-dumb [restart?]
   (when restart? (restart-game))
   (let [previous-score (atom (get-current-score))
-        right-threshold (atom *default-right-threshold*)]
+        right-threshold (atom DEFAULT-RIGHT-THRESHOLD)]
     (doseq [move next-move
             :while (not (game-over?))]
       (move)
@@ -71,7 +71,7 @@
         (if (= @previous-score current-score)
           (swap! right-threshold dec)
           (do
-            (reset! right-threshold *default-right-threshold*)
+            (reset! right-threshold DEFAULT-RIGHT-THRESHOLD)
             (reset! previous-score current-score))))
       (when (= @right-threshold 0)
         (right)
