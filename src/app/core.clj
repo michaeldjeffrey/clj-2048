@@ -7,13 +7,15 @@
 ;;; TODO: Maybe introduce some threading?
 ;;; TODO: The actual ML bits
 
+(def ^:dynamic *driver* nil)
 
-;; I have a problem
-(api/go my-driver "https://gabrielecirulli.github.io/2048/")
+(defn open-page []
+  "I have a problem"
+  (api/go *driver* "https://gabrielecirulli.github.io/2048/"))
 
 (defmacro define-direction [name key]
   `(defn ~name []
-     (api/fill my-driver {:tag :body} ~key)))
+     (api/fill *driver* {:tag :body} ~key)))
 
 (define-direction up keys/arrow-up)
 (define-direction down keys/arrow-down)
@@ -24,13 +26,13 @@
   "querier likes to return elements matching regex of :has-class.
   'tile' will return all classes containing the word 'tile'."
   []
-  (api/query-all my-driver {:tag :div :fn/has-class "tile-position"}))
+  (api/query-all *driver* {:tag :div :fn/has-class "tile-position"}))
 
 (defn tile-classes
   "Get a vector of all classes for each tile block"
   []
   (for [tile (get-tiles)]
-    (api/get-element-attr-el my-driver tile :class)))
+    (api/get-element-attr-el *driver* tile :class)))
 
 (defn tile-classes-to-input
   [tiles] 
@@ -43,15 +45,15 @@
 
 (defn get-current-score []
   (read-string
-   (api/get-element-text my-driver {:tag :div :fn/has-class "score-container"})))
+   (api/get-element-text *driver* {:tag :div :fn/has-class "score-container"})))
 
 (defn game-over? []
   (try
-    (api/query my-driver {:tag :div :fn/has-class "game-over"})
+    (api/query *driver* {:tag :div :fn/has-class "game-over"})
     (catch Exception e false)))
 
 (defn restart-game []
-  (api/click my-driver {:tag :a :fn/has-class "restart-button"}))g
+  (api/click *driver* {:tag :a :fn/has-class "restart-button"}))
 
 ;; (get-current-score)
 (def next-move (cycle [left down]))
