@@ -18,6 +18,14 @@ https://clojuredocs.org/clojure.core/doseq
 https://github.com/clojure-emacs/cider/blob/master/doc/debugging.md
 https://github.com/clojure/tools.trace
 
+## Tabs open as of [2018-05-23 Wed]
+
+https://github.com/igrishaev/etaoin/blob/master/src/etaoin/api.clj
+https://clojuredocs.org/clojure.core/dotimes
+https://clojuredocs.org/clojure.repl/doc
+https://clojure.org/about/concurrent_programming
+https://www.braveclojure.com/concurrency/
+
 ## License
 
 Copyright © 2018 FIXME
