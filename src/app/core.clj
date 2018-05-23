@@ -7,8 +7,6 @@
 ;;; TODO: Maybe introduce some threading?
 ;;; TODO: The actual ML bits
 
-(def my-driver (api/chrome))
-(api/quit my-driver)
 
 ;; I have a problem
 (api/go my-driver "https://gabrielecirulli.github.io/2048/")
@@ -21,9 +19,6 @@
 (define-direction down keys/arrow-down)
 (define-direction left keys/arrow-left)
 (define-direction right keys/arrow-right)
-
-(doseq [i (range 300)]
-  ((rand-nth [down left right])))
 
 (defn get-tiles
   "querier likes to return elements matching regex of :has-class.
@@ -45,8 +40,6 @@
     ;; coordinates from top left (1, 1) to bottom left (1, 4)
     (let [[_ _ value _ _ x y] (clojure.string/split tile #"( |-)")]
       (map read-string [value x y]))))
-
-;; (tile-classes-to-input (tile-classes))
 
 (defn get-current-score []
   (read-string
@@ -83,6 +76,4 @@
         (reset! right-threshold 3)))
     (get-current-score)))
 
-(for [_ (range 5)]
-  (play-dumb (game-over?)))
 
