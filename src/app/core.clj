@@ -92,3 +92,23 @@
                      [0 height]
                      [width height]])
 
+(defn one-game [x y]
+  (binding [*driver* (api/chrome)]
+    (api/set-window-size *driver* width height)
+    (api/set-window-position *driver* x y)
+    (open-page)
+    (api/wait-visible *driver* :active)
+    (play-dumb (game-over?))
+    (let [score (get-current-score)]
+      (api/quit *driver*)
+      score)))
+
+
+(defn do-scores []
+  (for [[x y] (take 4 (cycle window-configs))]
+    (future
+      (one-game x y))))
+
+(def scores (doall (do-scores)))
+
+
