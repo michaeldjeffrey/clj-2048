@@ -78,4 +78,17 @@
         (reset! right-threshold 3)))
     (get-current-score)))
 
+(def window-size (do
+                   (let [test (api/chrome)]
+                     (api/maximize test)
+                     (let [size (api/get-window-size test)]
+                       (api/quit test)
+                       size))))
+(def width (/ (:width window-size) 2))
+(def height (/ (:height window-size) 2))
+
+(def window-configs [[0 0]
+                     [width 0]
+                     [0 height]
+                     [width height]])
 
