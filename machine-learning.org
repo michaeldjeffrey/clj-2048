@@ -1,0 +1,9 @@
+#+Title: Machine Learning
+#+Author: Michael Jeffrey
+#+Date: [2018-05-23 Wed]
+
+I've been addicted to [[https://gabrielecirulli.github.io/2048/][2048]] for a good while. In fact, I played a game
+in the time I went to get the url for that link... I have a problem.
+
+I have wanted to do something machine learning related for a while,
+but could 

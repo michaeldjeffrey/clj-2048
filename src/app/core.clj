@@ -1,10 +1,12 @@
 (ns app.core
   (:require [etaoin.api :as api]
-            [etaoin.keys :as keys]))
+            [etaoin.keys :as keys]
+            [lambda-ml.core :refer :all]
+            [lambda-ml.neural-network :refer :all]
+            [lambda-ml.util :refer :all]))
 
 
 ;;; TODO: Look into caching the score elements.
-;;; TODO: Maybe introduce some threading?
 ;;; TODO: The actual ML bits
 
 (def ^:dynamic *driver* nil)
@@ -92,22 +94,37 @@
                      [0 height]
                      [width height]])
 
-(defn one-game [x y]
-  (binding [*driver* (api/chrome)]
-    (api/set-window-size *driver* width height)
-    (api/set-window-position *driver* x y)
-    (open-page)
-    (api/wait-visible *driver* :active)
-    (play-dumb (game-over?))
-    (let [score (get-current-score)]
-      (api/quit *driver*)
-      score)))
+(defmacro mj-with-driver
+  "(api/with-driver) macro does a let for local binding.
+  I want my binding to be a bit farther spread than that. CL style."
+  {:style/indent 1}
+  [driver & body]
+  `(binding [*driver* ~driver]
+     (try
+       ~@body
+       (finally
+         (api/quit *driver*)))))
 
+(defn setup-game [x y]
+  (api/set-window-size *driver* width height)
+  (api/set-window-position *driver* x y)
+  (open-page)
+  (api/wait-visible *driver* :active))
+
+(defn n-games [n x y]
+  (mj-with-driver (api/chrome)
+    (setup-game x y)
+    (doall
+     (for [_ (range n)]
+       (play-dumb (game-over?))))))
+
+(defn one-game [x y]
+  (n-games 1 x y))
 
 (defn do-scores []
   (for [[x y] (take 4 (cycle window-configs))]
     (future
-      (one-game x y))))
+      (n-games 3 x y))))
 
 (def scores (doall (do-scores)))
 
