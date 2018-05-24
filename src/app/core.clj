@@ -93,13 +93,15 @@
                      (let [size (api/get-window-size test)]
                        (api/quit test)
                        size))))
-(def width (/ (:width window-size) 2))
+(def width (/ (:width window-size) 3))
 (def height (/ (:height window-size) 2))
 
 (def window-configs [[0 0]
                      [width 0]
                      [0 height]
-                     [width height]])
+                     [width height]
+                     [(* width 2) 0]
+                     [(* width 2) height]])
 
 (defmacro mj-with-driver
   "(api/with-driver) macro does a let for local binding.
