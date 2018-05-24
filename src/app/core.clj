@@ -87,6 +87,24 @@
             (reset! up-threshold DEFAULT-UP-THRESHOLD)))))
     (get-current-score)))
 
+(defn play-dumb-2
+  ([]
+   (let [move-set (cycle [left down])]
+     (play-dumb-2 (first move-set) (rest move-set))))
+  ([move move-set]
+   (play-dumb-2 move move-set 0 3 3 4))
+  ([move move-set previous-score right-threshold right-attempts up-threshold]
+   (move)
+   (let [current-score (get-current-score)
+         same-score (= previous-score current-score)]
+     (cond
+       (game-over?) current-score
+       (zero? right-attempts) (play-dumb-2 (first move-set) (rest move-set) current-score DEFAULT-RIGHT-THRESHOLD DEFAULT-RIGHT-THRESHOLD (dec up-threshold))
+       (zero? up-threshold) (play-dumb-2 up move-set current-score right-threshold 0 DEFAULT-UP-THRESHOLD)
+       (zero? right-threshold) (play-dumb-2 right move-set current-score DEFAULT-RIGHT-THRESHOLD (dec right-attempts) up-threshold)
+       same-score (play-dumb-2 (first move-set) (rest move-set) current-score (dec right-threshold) right-attempts up-threshold)
+       :else (recur (first move-set) (rest move-set) current-score right-threshold right-attempts up-threshold)))))
+
 (def window-size (do
                    (let [test (api/chrome)]
                      (api/maximize test)
