@@ -114,27 +114,38 @@
        (finally
          (api/quit *driver*)))))
 
-(defn setup-game [x y]
+(defn setup-game [{:keys [width height x y]}]
   (api/set-window-size *driver* width height)
   (api/set-window-position *driver* x y)
   (open-page)
   (api/wait-visible *driver* :active))
 
-(defn n-games [n x y]
-  (mj-with-driver (api/chrome)
-    (setup-game x y)
+(def default-game-options {:width width :height height
+                           :x 0 :y 0})
+
+(defn n-games [{:keys [port rounds] :as options}]
+  (mj-with-driver (api/chrome {:port port})
+    (setup-game (merge default-game-options options))
     (doall
-     (for [_ (range n)]
+     (for [_ (range rounds)]
        (play-dumb (game-over?))))))
 
 (defn one-game [x y]
-  (n-games 1 x y))
+  (n-games 1 {:width width :height height
+              :x x :y y
+              :rounds 1}))
 
-(defn do-scores []
-  (for [[x y] (take 4 (cycle window-configs))]
+(defn do-scores [rounds]
+  (for [[[x y] port] (zipmap (take 6 (cycle window-configs)) (range 9000 10000))]
     (future
-      (n-games 3 x y))))
+      (n-games {:rounds rounds :port port
+                :width width :height height
+                :x x :y y}))))
 
-(def scores (doall (do-scores)))
+(comment 
+  (def scores (doall (do-scores 3)))
+  (let [all-scores (mapcat deref scores)]
+    (println all-scores)
+    (println (str "Average Score: " (float (/ (apply + all-scores) (count all-scores)))))))
 
 
