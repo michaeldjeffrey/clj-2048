@@ -115,7 +115,9 @@
               {:x 800 :y 0 :port 9004}
               {:x 800 :y 525 :port 9005}
               {:x 1200 :y 0 :port 9006}
-              {:x 1200 :y 525 :port 9007}])
+              {:x 1200 :y 525 :port 9007}
+              {:x 1600 :y 0 :port 9008}
+              {:x 1600 :y 525 :port 9009}])
 
 (defn position-window [{:keys [x y]}]
   (api/set-window-size *driver* 300 500)
@@ -133,17 +135,21 @@
       (println "writing file " file-name)
       (spit file-name data))))
 
-(defn run-instance [{:keys [wait port] :as config}]
-  (let [wait-time (* 250 wait)]
-    (with-driver (api/chrome {:port port})
-      (go "https://gabrielecirulli.github.io/2048/")
-      (Thread/sleep wait-time)
-      (position-window config)
-      (doseq [i (range 2)]
-        (restart-game)
-        (-> (random-game)
-            (game->data)
-            (write-game-data))))))
+(defn run-instance [config]
+  (with-driver (api/chrome {:port (:port config)})
+    (go "https://gabrielecirulli.github.io/2048/")
+    (Thread/sleep 250)
+    (position-window config)
+    (doseq [i (range 5)]
+      (restart-game)
+      (-> (random-game)
+          (game->data)
+          (write-game-data)))))
+
+
 
 (comment
-  (run-instance {:x 0 :y 0 :port 9000 :wait 2}))
+  (doall (map #(future (run-instance %)) windows)))
+
+(comment
+  (run-instance {:x 0 :y 0 :port 9000}))
