@@ -127,21 +127,26 @@
 (defn get-file-name []
   (str "src/training-data/game-" (get-file-number) ".edn"))
 
-(def windows [{:x 0 :y 0 :port 9000}
-              {:x 0 :y 525 :port 9001}
-              {:x 400 :y 0 :port 9002}
-              {:x 400 :y 525 :port 9003}
-              {:x 800 :y 0 :port 9004}
-              {:x 800 :y 525 :port 9005}
-              {:x 1200 :y 0 :port 9006}
-              {:x 1200 :y 525 :port 9007}
-              {:x 1600 :y 0 :port 9008}
-              {:x 1600 :y 525 :port 9009}])
+(def windows [{:x 0 :y 0 :port 7000}
+              {:x 0 :y 525 :port 7001}
+              {:x 0 :y 1025 :port 7002}
+              {:x 400 :y 0 :port 7003}
+              {:x 400 :y 525 :port 7004}
+              {:x 400 :y 1025 :port 7005}
+              {:x 800 :y 0 :port 7006}
+              {:x 800 :y 525 :port 7007}
+              {:x 800 :y 1025 :port 7008}
+              {:x 1200 :y 0 :port 7009}
+              {:x 1200 :y 525 :port 7010}
+              {:x 1200 :y 1025 :port 7011}
+              {:x 1600 :y 0 :port 7012}
+              {:x 1600 :y 525 :port 7013}
+              {:x 1600 :y 1025 :port 7014}])
 
 (defn position-window [{:keys [x y]}]
   (api/set-window-size *driver* 300 500)
   (api/set-window-position *driver* x y)
-  (api/scroll *driver* 0 150))
+  (api/scroll *driver* 0 200))
 
 (defn game->data [game]
   {:moves (count game)
