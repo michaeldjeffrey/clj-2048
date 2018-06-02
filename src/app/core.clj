@@ -95,8 +95,13 @@
   (click-with-class "restart-button"))
 
 (defn make-move-get-state [move]
+  [(into [] (tiles->input (elements-with-class "tile-position")))
+   (move)
+   (current-score)])
+
+(defn xmake-move-get-state [move]
   (let [move-value (move)]
-    (Thread/sleep 50)
+    (Thread/sleep 250)
     [(into [] (tiles->input (elements-with-class "tile-position")))
      move-value
      (current-score)]))
