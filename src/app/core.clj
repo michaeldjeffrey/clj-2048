@@ -46,8 +46,17 @@
 
 (defn elements-with-class
   "Assuming all elements we want to query are divs"
-  [class]
-  (api/query-all *driver* {:tag :div :fn/has-class class}))
+  ([class]
+   (elements-with-class class 3))
+  ([class trys]
+   (try
+     (api/query-all *driver* {:tag :div :fn/has-class class})
+     (catch Exception err
+       (if (zero? trys)
+         (throw err)
+         (do
+           (safe-println "Trying again on try: " trys)
+           (elements-with-class class (dec trys))))))))
 
 (defn click-with-class
   "Assuming all elements we want to click are links"
