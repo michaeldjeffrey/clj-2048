@@ -13,6 +13,10 @@
 (def run-count (atom 1000))
 ;; (reset! run-count 0)
 
+(defn safe-println [& more]
+  (.write *out*
+          (str (clojure.string/join " " more) "\n")))
+
 (defmacro with-driver
   "(api/with-driver) macro does a let for local binding.
   I want my binding to be a bit farther spread than that. CL style."
@@ -22,7 +26,8 @@
      (try
        ~@body
        (catch Exception e#
-         (clojure.pprint/pprint e#))
+         (safe-println e#))
+       ;;(clojure.pprint/pprint e#))
        (finally
          (api/quit *driver*)))))
 
