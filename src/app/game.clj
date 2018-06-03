@@ -13,7 +13,7 @@
 
 (defn compact-collection [coll]
   (take 4 (concat
-           (->> coll
+           (->> (map deref coll)
                 (filter pos?)
                 (partition-by identity)
                 (map even-groups)
@@ -21,13 +21,20 @@
                 (flatten))
            (repeat 0))))
 
+(defn update-tiles [colls]
+  (doseq [coll colls]
+    (let [values (compact-collection coll)
+          zipped (zipmap coll values)]
+      (doseq [[a val] zipped]
+        (reset! a val)))))
+
 (defn left [rows]
-  (map compact-collection rows))
+  (update-tiles rows))
 
 (defn right [rows]
   (->> rows
        (map reverse)
-       (map compact-collection)
+       update-tiles
        (map reverse)))
 
 (defn up [columns]
