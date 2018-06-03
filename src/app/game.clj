@@ -11,15 +11,17 @@
 (defn- even-groups [coll]
   (split-at 2 coll))
 
+(def pull-left
+  (comp
+   (filter pos?)
+   (partition-by identity)
+   (map even-groups)
+   (map adder)
+   flatten))
+
 (defn compact-collection [coll]
-  (take 4 (concat
-           (->> (map deref coll)
-                (filter pos?)
-                (partition-by identity)
-                (map even-groups)
-                (map adder)
-                (flatten))
-           (repeat 0))))
+  (take 4 (concat (pull-left coll)
+                  (repeat 0))))
 
 (defn update-tiles [colls]
   (doseq [coll colls]
