@@ -96,3 +96,9 @@
   (add-random-tile)
   (print-game-board))
 
+(defn reset-game []
+  (update-tiles (vals tiles) (take 16 (repeat 0))))
+
+(defn new-game []
+  (doall (add-random-tiles 2))
+  (print-game-board))
