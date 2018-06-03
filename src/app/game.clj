@@ -23,21 +23,30 @@
   (take 4 (concat (pull-left coll)
                   (repeat 0))))
 
-(defn update-tiles [colls]
-  (doseq [coll colls]
-    (let [values (compact-collection coll)
-          zipped (zipmap coll values)]
-      (doseq [[a val] zipped]
-        (reset! a val)))))
+(defn update-tile [tile new-val]
+  (reset! tile new-val))
+
+(defn update-tiles [old new-vals]
+  (doall (map update-tile old new-vals)))
+
+(defn nested-deref [coll]
+  (mapv #(mapv deref %) coll))
+
+(defmacro reversing-game-state [body]
+  (let [[func coll] body]
+    `(map reverse (~func (map reverse ~coll)))))
+
+(defn only-move [tiles]
+  (update-tiles
+   tiles
+   (compact-collection (nested-deref tiles))))
 
 (defn left [rows]
-  (update-tiles rows))
+  (only-move rows))
 
 (defn right [rows]
-  (->> rows
-       (map reverse)
-       update-tiles
-       (map reverse)))
+  (reversing-game-state
+   (only-move rows)))
 
 (defn up [columns]
   (left columns))
