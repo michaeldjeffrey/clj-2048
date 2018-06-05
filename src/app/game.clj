@@ -11,13 +11,13 @@
 (defn- even-groups [coll]
   (split-at 2 coll))
 
-(def pull-left
-  (comp
-   (filter pos?)
-   (partition-by identity)
-   (map even-groups)
-   (map adder)
-   flatten))
+(defn pull-left [coll]
+  (->> coll
+       (filter pos?)
+       (partition-by identity)
+       (map even-groups)
+       (map adder)
+       flatten))
 
 (defn compact-collection [coll]
   (take 4 (concat (pull-left coll)
