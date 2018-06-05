@@ -26,8 +26,11 @@
 (defn update-tile [tile new-val]
   (reset! tile new-val))
 
-(defn update-tiles [old new-vals]
-  (doall (map update-tile old new-vals)))
+(defn update-foursome [old new-vals]
+  (mapv update-tile old new-vals))
+
+(defn update-game [old new-vals]
+  (mapv update-foursome old new-vals))
 
 (defn nested-deref [coll]
   (mapv #(mapv deref %) coll))
@@ -37,7 +40,7 @@
     `(map reverse (~func (map reverse ~coll)))))
 
 (defn only-move [tiles]
-  (update-tiles
+  (update-game
    tiles
    (compact-collection (nested-deref tiles))))
 
