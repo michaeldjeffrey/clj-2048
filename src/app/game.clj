@@ -35,10 +35,6 @@
 (defn nested-deref [coll]
   (mapv #(mapv deref %) coll))
 
-(defmacro reversing-game-state [body]
-  (let [[func coll] body]
-    `(map reverse (~func (map reverse ~coll)))))
-
 (defn only-move [tiles]
   (update-game
    tiles
@@ -57,6 +53,11 @@
 (defn down [columns]
   (right columns))
 
+(defn reverse-only-move [tiles]
+  (->> tiles
+       (map reverse)
+       (only-move)
+       (map reverse)))
 
 ;; Top left (1, 1)
 ;; Bottom right (4, 4)
