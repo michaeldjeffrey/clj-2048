@@ -82,6 +82,7 @@
   (repeatedly n add-random-tile))
 
 (defn print-game-board []
+  (println "========")
   (doseq [row rows]
     (println (map deref row))))
 
@@ -106,8 +107,15 @@
   (add-random-tile)
   (print-game-board))
 
+(defn make-n-moves [n]
+  (run! make-move (repeatedly n #(rand-nth [:left :right :up :down]))))
+
 (defn reset-game []
-  (update-tiles (vals tiles) (take 16 (repeat 0))))
+  (update-game (vals tiles) (take 16 (repeat 0))))
+
+(defn game-over? []
+  "TODO: work correctly."
+  (empty? (filter pos? (map deref (vals tiles)))))
 
 (defn new-game []
   (doall (add-random-tiles 2))
