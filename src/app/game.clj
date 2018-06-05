@@ -38,8 +38,8 @@
 (defn only-move [tiles]
   (update-game
    tiles
-   (compact-collection (nested-deref tiles))))
-
+   (map compact-collection
+        (nested-deref tiles))
 
 (defn reverse-only-move [tiles]
   (->> tiles
