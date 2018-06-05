@@ -40,18 +40,6 @@
    tiles
    (compact-collection (nested-deref tiles))))
 
-(defn left [rows]
-  (only-move rows))
-
-(defn right [rows]
-  (reversing-game-state
-   (only-move rows)))
-
-(defn up [columns]
-  (left columns))
-
-(defn down [columns]
-  (right columns))
 
 (defn reverse-only-move [tiles]
   (->> tiles
@@ -95,8 +83,24 @@
   (doseq [row rows]
     (println (map deref row))))
 
+(defmulti move identity)
+
+(defmethod move :left [_]
+  (only-move rows))
+
+(defmethod move :right [_]
+  (reverse-only-move rows))
+
+(defmethod move :up [_]
+  (only-move columns))
+
+(defmethod move :down [_]
+  (reverse-only-move columns))
+
+
 (defn make-move [instruction]
-  (apply (instruction moves))
+  ;; TODO: Reference to columns and rows no correct in 'moves
+  (move instruction)
   (add-random-tile)
   (print-game-board))
 
