@@ -54,22 +54,24 @@
             :x1y3 (atom 0) :x2y3 (atom 0) :x3y3 (atom 0) :x4y3 (atom 0)
             :x1y4 (atom 0) :x2y4 (atom 0) :x3y4 (atom 0) :x4y4 (atom 0)})
 
-(def rows (partition 4
-                     (map tiles [:x1y1 :x2y1 :x3y1 :x4y1
-                                 :x1y2 :x2y2 :x3y2 :x4y2
-                                 :x1y3 :x2y3 :x3y3 :x4y3
-                                 :x1y4 :x2y4 :x3y4 :x4y4])))
+(def orders {:rows    [:x1y1 :x2y1 :x3y1 :x4y1
+                       :x1y2 :x2y2 :x3y2 :x4y2
+                       :x1y3 :x2y3 :x3y3 :x4y3
+                       :x1y4 :x2y4 :x3y4 :x4y4]
+             :columns [:x1y1 :x1y2 :x1y3 :x1y4
+                       :x2y1 :x2y2 :x2y3 :x2y4
+                       :x3y1 :x3y2 :x3y3 :x3y4
+                       :x4y1 :x4y2 :x4y3 :x4y4]})
 
-(def columns (partition 4
-                        (map tiles [:x1y1 :x1y2 :x1y3 :x1y4
-                                    :x2y1 :x2y2 :x2y3 :x2y4
-                                    :x3y1 :x3y2 :x3y3 :x3y4
-                                    :x4y1 :x4y2 :x4y3 :x4y4])))
+(def rows (->> orders
+               :rows
+               (mapv tiles)
+               (partition 4)))
 
-(def moves {:left  #(left rows)
-            :right #(right rows)
-            :up    #(up columns)
-            :down  #(down columns)})
+(def columns (->> orders
+                  :columns
+                  (mapv tiles)
+                  (partition 4)))
 
 (defn add-random-tile []
   (reset!
