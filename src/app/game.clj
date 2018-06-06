@@ -85,10 +85,12 @@
     :else (add-random-tiles (dec n)
                             (add-random-tile game-state))))
 
-(defn print-game-board []
+(defn print-game-board [game-state]
   (println "========")
-  (doseq [row rows]
-    (println (map deref row))))
+  (println (str "Score: " (:score game-state)))
+  (doseq [row (get-rows game-state)]
+    (println row))
+  game-state)
 
 (defn actuate [input]
   (flatten (map compact-collection input)))
