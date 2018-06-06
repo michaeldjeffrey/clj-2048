@@ -73,14 +73,17 @@
                   :columns
                   (mapv tiles)
                   (partition 4)))
+(defn add-random-tile [{:keys [board] :as game-state}]
+  (let [empty (rand-nth (keys (filter empty-tile? board)))
+        new-value (if (> 0.9 (rand)) 2 4)]
+    (assoc-in game-state
+               [:board empty] new-value)))
 
-(defn add-random-tile []
-  (reset!
-   (rand-nth (filter #(zero? @%) (vals tiles)))
-   (if (> 0.9 (rand)) 2 4)))
-
-(defn add-random-tiles [n]
-  (repeatedly n add-random-tile))
+(defn add-random-tiles [n game-state]
+  (cond
+    (zero? n) game-state
+    :else (add-random-tiles (dec n)
+                            (add-random-tile game-state))))
 
 (defn print-game-board []
   (println "========")
