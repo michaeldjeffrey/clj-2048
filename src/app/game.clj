@@ -87,32 +87,56 @@
   (doseq [row rows]
     (println (map deref row))))
 
-(defmulti move identity)
-
-(defmethod move :left [_]
-  (only-move rows))
-
-(defmethod move :right [_]
-  (reverse-only-move rows))
-
-(defmethod move :up [_]
-  (only-move columns))
-
-(defmethod move :down [_]
-  (reverse-only-move columns))
-
-
-(defn make-move [instruction]
-  ;; TODO: Reference to columns and rows no correct in 'moves
-  (move instruction)
-  (add-random-tile)
-  (print-game-board))
-
-(defn make-n-moves [n]
-  (run! make-move (repeatedly n #(rand-nth [:left :right :up :down]))))
 
 (defn reset-game []
   (update-game (vals tiles) (take 16 (repeat 0))))
+(defmulti move (fn [_ move] move))
+
+(defmethod move :left [game-state _]
+  (assoc game-state :board
+         (zipmap (orders :rows)
+                 (-> game-state
+                     (get-board-as :rows)
+                     (actuate)))))
+
+(defmethod move :right [game-state _]
+  (assoc game-state :board
+         (zipmap (orders :rows)
+                 (-> game-state
+                     (get-board-as :rows)
+                     (actuate-reverse)))))
+
+(defmethod move :up [game-state _]
+  (assoc game-state :board
+         (zipmap (orders :columns)
+                 (-> game-state
+                     (get-board-as :columns)
+                     (actuate)))))
+
+(defmethod move :down [game-state _]
+  (assoc game-state :board
+         (zipmap (orders :columns)
+                 (-> game-state
+                     (get-board-as :columns)
+                     (actuate-reverse)))))
+
+(defn make-move [game-state instruction]
+  (-> game-state
+      (assoc :prev-board (:board game-state))
+      (move instruction)
+      (add-random-tile)
+      (simple-score)
+      (print-game-board)))
+
+(defn make-n-moves [n game-state]
+  (cond
+    (zero? n) game-state
+    (game-over? game-state) (do
+                              (println "Game Over with " n "moves left")
+                              (print-game-board game-state))
+    :else (let [random-move (rand-nth [:left :right :up :down])
+                new-game-state (make-move game-state random-move)]
+            (make-n-moves (dec n) new-game-state))))
 
 (defn game-over? []
   "TODO: work correctly."
