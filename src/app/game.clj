@@ -157,9 +157,20 @@
                 new-game-state (make-move game-state random-move)]
             (make-n-moves (dec n) new-game-state))))
 
-(defn game-over? []
-  "TODO: work correctly."
-  (empty? (filter pos? (map deref (vals tiles)))))
+(defn cells-available? [{:keys [board]}]
+  (seq (filter empty-tile? board)))
+
+(defn matches-available? [{:keys [board] :as game-state}]
+  (or
+   (= board
+      (actuate (get-board-as game-state :rows)))
+   (= board
+      (actuate (get-board-as game-state :columns)))))
+
+(defn game-over? [game-state]
+  (not (or (cells-available? game-state)
+           (matches-available? game-state))))
+
 
 (defn new-game []
   (doall (add-random-tiles 2))
