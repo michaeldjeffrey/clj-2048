@@ -121,3 +121,10 @@
 (defn new-game []
   (doall (add-random-tiles 2))
   (print-game-board))
+(defn new-game
+  ([] (new-game 2))
+  ([n]
+   (add-random-tiles
+    n
+    {:board (zipmap (orders :rows) (repeat 0))
+     :score 0})))
