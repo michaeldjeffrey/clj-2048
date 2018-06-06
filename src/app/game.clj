@@ -1,5 +1,14 @@
 (ns app.game)
 
+(def ^:const orders {:rows    [:x1y1 :x2y1 :x3y1 :x4y1
+                               :x1y2 :x2y2 :x3y2 :x4y2
+                               :x1y3 :x2y3 :x3y3 :x4y3
+                               :x1y4 :x2y4 :x3y4 :x4y4]
+                     :columns [:x1y1 :x1y2 :x1y3 :x1y4
+                               :x2y1 :x2y2 :x2y3 :x2y4
+                               :x3y1 :x3y2 :x3y3 :x3y4
+                               :x4y1 :x4y2 :x4y3 :x4y4]})
+
 (defn- adder
   "Ignores empty seqs because adding them results in spacer 0s
   [(8) ()] -> [(8) (0)] is bad."
@@ -54,14 +63,6 @@
             :x1y3 (atom 0) :x2y3 (atom 0) :x3y3 (atom 0) :x4y3 (atom 0)
             :x1y4 (atom 0) :x2y4 (atom 0) :x3y4 (atom 0) :x4y4 (atom 0)})
 
-(def orders {:rows    [:x1y1 :x2y1 :x3y1 :x4y1
-                       :x1y2 :x2y2 :x3y2 :x4y2
-                       :x1y3 :x2y3 :x3y3 :x4y3
-                       :x1y4 :x2y4 :x3y4 :x4y4]
-             :columns [:x1y1 :x1y2 :x1y3 :x1y4
-                       :x2y1 :x2y2 :x2y3 :x2y4
-                       :x3y1 :x3y2 :x3y3 :x3y4
-                       :x4y1 :x4y2 :x4y3 :x4y4]})
 
 (def rows (->> orders
                :rows
