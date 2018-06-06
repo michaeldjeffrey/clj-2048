@@ -90,6 +90,20 @@
   (doseq [row rows]
     (println (map deref row))))
 
+(defn actuate [input]
+  (flatten (map compact-collection input)))
+
+(defn actuate-reverse [input]
+  (flatten
+   (->> input
+        (map reverse)
+        (map compact-collection)
+        (map reverse))))
+
+(defn get-board-as [{:keys [board]} direction]
+  (->> (get orders direction)
+       (map board)
+       (partition 4)))
 
 (defn reset-game []
   (update-game (vals tiles) (take 16 (repeat 0))))
