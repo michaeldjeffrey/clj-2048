@@ -73,6 +73,12 @@
                   :columns
                   (mapv tiles)
                   (partition 4)))
+(defn simple-score [{:keys [board] :as game-state}]
+  (assoc game-state :score (reduce + (vals board))))
+
+(defn empty-tile? [[_ value]]
+  (zero? value))
+
 (defn add-random-tile [{:keys [board] :as game-state}]
   (let [empty (rand-nth (keys (filter empty-tile? board)))
         new-value (if (> 0.9 (rand)) 2 4)]
@@ -172,9 +178,6 @@
            (matches-available? game-state))))
 
 
-(defn new-game []
-  (doall (add-random-tiles 2))
-  (print-game-board))
 (defn new-game
   ([] (new-game 2))
   ([n]
