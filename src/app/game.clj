@@ -92,41 +92,38 @@
 
 (defmulti move (fn [_ move] move))
 
-(defmethod move :left [game-state _]
+(defn move- [game-state board-order actuator]
   (assoc game-state :board
-         (zipmap (orders :rows)
+         (zipmap (get orders board-order)
                  (-> game-state
-                     (get-board-as :rows)
-                     (actuate)))))
+                     (get-board-as board-order)
+                     (actuator)))))
+
+(defmethod move :left [game-state _]
+  (move- game-state :rows #'actuate))
 
 (defmethod move :right [game-state _]
-  (assoc game-state :board
-         (zipmap (orders :rows)
-                 (-> game-state
-                     (get-board-as :rows)
-                     (actuate-reverse)))))
+  (move- game-state :rows #'actuate-reverse))
 
 (defmethod move :up [game-state _]
-  (assoc game-state :board
-         (zipmap (orders :columns)
-                 (-> game-state
-                     (get-board-as :columns)
-                     (actuate)))))
+  (move- game-state :columns #'actuate))
 
 (defmethod move :down [game-state _]
-  (assoc game-state :board
-         (zipmap (orders :columns)
-                 (-> game-state
-                     (get-board-as :columns)
-                     (actuate-reverse)))))
+  (move- game-state :columns #'actuate-reverse))
 
-(defn make-move [game-state instruction]
-  (-> game-state
-      (assoc :prev-board (:board game-state))
-      (move instruction)
-      (add-random-tile)
-      (simple-score)
-      (print-game-board)))
+(defn rand-instruction []
+  (rand-nth [:left :right :down :up]))
+
+(defn make-move
+  ([game-state]
+   (make-move game-state (rand-instruction)))
+  ([game-state instruction]
+   (-> game-state
+       (move instruction)
+       (add-random-tile)
+       (simple-score)
+       ;;(print-game-board)
+       )))
 
 (defn make-n-moves [n game-state]
   (cond
@@ -134,10 +131,7 @@
     (game-over? game-state) (do
                               (println "Game Over with " n "moves left")
                               (print-game-board game-state))
-    :else (let [random-move (rand-nth [:left :right :up :down])
-                new-game-state (make-move game-state random-move)]
-            (make-n-moves (dec n) new-game-state))))
-
+    :else (make-n-moves (dec n) (make-move game-state))))
 
 (defn new-game
   ([] (new-game 2))
