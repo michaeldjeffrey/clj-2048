@@ -28,9 +28,11 @@
        (map adder)
        flatten))
 
-(defn compact-collection [coll]
+(defn +compact-collection+ [coll]
   (take 4 (concat (pull-left coll)
                   (repeat 0))))
+
+(def compact-collection (memoize +compact-collection+))
 
 (defn simple-score [{:keys [board] :as game-state}]
   (assoc game-state :score (reduce + (vals board))))
