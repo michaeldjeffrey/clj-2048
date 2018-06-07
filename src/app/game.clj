@@ -34,6 +34,15 @@
 
 (def compact-collection (memoize +compact-collection+))
 
+(defn actuate [input]
+  (flatten (map compact-collection input)))
+
+(defn actuate-reverse [input]
+  (flatten
+   (->> input
+        (map reverse)
+        (map compact-collection)
+        (map reverse))))
 (defn simple-score [{:keys [board] :as game-state}]
   (assoc game-state :score (reduce + (vals board))))
 
@@ -59,15 +68,6 @@
     (println row))
   game-state)
 
-(defn actuate [input]
-  (flatten (map compact-collection input)))
-
-(defn actuate-reverse [input]
-  (flatten
-   (->> input
-        (map reverse)
-        (map compact-collection)
-        (map reverse))))
 
 (defn get-board-as [{:keys [board]} direction]
   (->> (get orders direction)
