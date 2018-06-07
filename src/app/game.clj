@@ -140,3 +140,33 @@
     n
     {:board (zipmap (orders :rows) (repeat 0))
      :score 0})))
+
+(defn play-game
+  ([] (play-game (new-game)))
+  ([game]
+   (cond
+     (game-over? game) game
+     :else (play-game (make-move game)))))
+
+(defn pplay-game [_]
+  (play-game))
+
+(defn write-game-data [data]
+  (binding [*print-length* nil]
+    (let [file-name (str "src/new-training-data/1000000-games.edn")]
+      (spit file-name (with-out-str
+                        (clojure.pprint/pprint data)))))
+  "written")
+
+(comment)
+(do
+  (println "Regular (map): 5000 games")
+  (time (do
+          (doall (run! pplay-game (range 5000)))
+          nil)))
+(do
+  (println "Woohoo (pmap): 10000 games")
+  (time (do
+          (doall (pmap pplay-game (range 10000)))
+          nil)))
+
