@@ -55,6 +55,21 @@
 (defn empty-tile? [[_ value]]
   (zero? value))
 
+(defn cells-available? [{:keys [board]}]
+  (seq (filter empty-tile? board)))
+
+(defn matches-available? [{:keys [board] :as game-state}]
+  (or
+   (= board
+      (actuate (get-board-as game-state :rows)))
+   (= board
+      (actuate (get-board-as game-state :columns)))))
+
+(defn game-over?
+  [game-state]
+  (not (or (cells-available? game-state)
+           (matches-available? game-state))))
+
 (defn add-random-tile [{:keys [board] :as game-state}]
   (let [empty (rand-nth (keys (filter empty-tile? board)))
         new-value (if (> 0.9 (rand)) 2 4)]
@@ -122,20 +137,6 @@
     :else (let [random-move (rand-nth [:left :right :up :down])
                 new-game-state (make-move game-state random-move)]
             (make-n-moves (dec n) new-game-state))))
-
-(defn cells-available? [{:keys [board]}]
-  (seq (filter empty-tile? board)))
-
-(defn matches-available? [{:keys [board] :as game-state}]
-  (or
-   (= board
-      (actuate (get-board-as game-state :rows)))
-   (= board
-      (actuate (get-board-as game-state :columns)))))
-
-(defn game-over? [game-state]
-  (not (or (cells-available? game-state)
-           (matches-available? game-state))))
 
 
 (defn new-game
