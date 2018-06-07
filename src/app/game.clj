@@ -43,8 +43,14 @@
         (map reverse)
         (map compact-collection)
         (map reverse))))
+
 (defn simple-score [{:keys [board] :as game-state}]
   (assoc game-state :score (reduce + (vals board))))
+
+(defn get-board-as [{:keys [board]} direction]
+  (->> (get orders direction)
+       (map board)
+       (partition 4)))
 
 (defn empty-tile? [[_ value]]
   (zero? value))
@@ -64,15 +70,10 @@
 (defn print-game-board [game-state]
   (println "========")
   (println (str "Score: " (:score game-state)))
-  (doseq [row (get-rows game-state)]
+  (doseq [row (get-board-as game-state :rows)]
     (println row))
   game-state)
 
-
-(defn get-board-as [{:keys [board]} direction]
-  (->> (get orders direction)
-       (map board)
-       (partition 4)))
 
 (defmulti move (fn [_ move] move))
 
