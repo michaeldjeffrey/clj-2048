@@ -45,7 +45,9 @@
         (map reverse))))
 
 (defn simple-score [{:keys [board] :as game-state}]
-  (assoc game-state :score (reduce + (vals board))))
+  (assoc game-state :score (->> (vals board)
+                                (remove #(= 2 %))
+                                (reduce +))))
 
 (defn get-board-as [{:keys [board]} direction]
   (->> (get orders direction)
@@ -158,15 +160,15 @@
                         (clojure.pprint/pprint data)))))
   "written")
 
-(comment)
-(do
-  (println "Regular (map): 5000 games")
-  (time (do
-          (doall (run! pplay-game (range 5000)))
-          nil)))
-(do
-  (println "Woohoo (pmap): 10000 games")
-  (time (do
-          (doall (pmap pplay-game (range 10000)))
-          nil)))
+(comment
+  (do
+    (println "Regular (map): 5000 games")
+    (time (do
+            (doall (run! pplay-game (range 5000)))
+            nil)))
+  (do
+    (println "Woohoo (pmap): 10000 games")
+    (time (do
+            (doall (pmap pplay-game (range 10000)))
+            nil))))
 
