@@ -144,7 +144,7 @@
               {:x 1600 :y 1025 :port 7014}])
 
 (defn position-window [{:keys [x y]}]
-  (api/set-window-size *driver* 300 500)
+  (api/set-window-size *driver* 300 600)
   (api/set-window-position *driver* x y)
   (api/scroll *driver* 0 200))
 
@@ -173,7 +173,7 @@
 
 
 (comment
-  (doall (map #(future (run-instance %)) windows)))
+  (doall (map #(future (run-instance %)) (take 4 windows))))
 
 (comment
   (run-instance {:x 0 :y 0 :port 9000}))
